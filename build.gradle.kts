@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.5.7"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.4"
   kotlin("jvm") version "2.3.21"
   id("org.unbroken-dome.test-sets") version "4.1.0"
   id("jacoco")
@@ -20,29 +20,6 @@ configurations {
     // Force json-unit-core back to the version MockServer was built against.
     resolutionStrategy.force("net.javacrumbs.json-unit:json-unit-core:2.36.0")
   }
-  // CVE version overrides - the hmpps-gradle-spring-boot plugin uses resolution rules that
-  // override BOM constraints, so we must use eachDependency to force specific versions.
-  // These can be removed once the plugin is upgraded to 11.0.x
-  all {
-    resolutionStrategy.eachDependency {
-      if (requested.group == "io.netty" && requested.name.startsWith("netty-") && !requested.name.startsWith("netty-tcnative")) {
-        useVersion("4.2.16.Final")
-        because("Address CVE-2026-44891, CVE-2026-55831, CVE-2026-55833 and other Netty CVEs")
-      }
-      if (requested.group == "org.apache.logging.log4j") {
-        useVersion("2.26.1")
-        because("Address CVE-2026-49844")
-      }
-      if (requested.group == "com.fasterxml.jackson.core" && requested.name == "jackson-databind") {
-        useVersion("2.22.1")
-        because("Address CVE-2026-54515 and CVE-2026-59889")
-      }
-      if (requested.group == "tools.jackson.core" && requested.name == "jackson-databind") {
-        useVersion("3.1.5")
-        because("Address CVE-2026-59889")
-      }
-    }
-  }
 }
 
 dependencyCheck {
@@ -54,7 +31,7 @@ testSets {
 }
 
 dependencies {
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.5.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.0")
   implementation("org.springframework.boot:spring-boot-starter-webmvc")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-webclient")
@@ -88,8 +65,8 @@ dependencies {
   // OpenAPI dependencies
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
   constraints {
-    implementation("org.webjars:swagger-ui:5.32.7") {
-      because("Address DOMPurify CVEs (CVE-2026-65898 through CVE-2026-66010) - bundles DOMPurify 3.4.11")
+    implementation("org.webjars:swagger-ui:5.32.11") {
+      because("Address DOMPurify CVEs (CVE-2026-65898 through CVE-2026-66010) - pinned by plugin 11.0.2")
     }
   }
 
@@ -110,29 +87,6 @@ dependencies {
   implementation("net.javacrumbs.shedlock:shedlock-spring:6.10.0")
   implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:6.10.0")
 
-  constraints {
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.22.1") {
-      because("Address CVE-2026-54515 and CVE-2026-59889 - can be removed once hmpps-kotlin-spring-boot-starter has a new version addressing this and hmpps-sqs-spring-boot-starter upgraded to v7")
-    }
-    implementation("org.springframework.retry:spring-retry:2.0.13") {
-      because("Address CVE-2026-41710 - can be removed once hmpps-sqs-spring-boot-starter upgraded to v7")
-    }
-  }
-
-  // hmpps-spring-boot plugin explicitly forcing the tomcat-embed-core version, so we can't override using constraints
-  implementation("org.apache.tomcat.embed:tomcat-embed-websocket") {
-    version {
-      strictly("11.0.24")
-    }
-    because("Address CVE-2026-59084 - can be removed once uk.gov.justice.hmpps.gradle-spring-boot to 11.0.x ")
-  }
-  // hmpps-spring-boot plugin explicitly forcing the tomcat-embed-core version, so we can't override using constraints
-  implementation("org.apache.tomcat.embed:tomcat-embed-core") {
-    version {
-      strictly("11.0.24")
-    }
-    because("Address CVE-2026-59084 - can be removed once uk.gov.justice.hmpps.gradle-spring-boot to 11.0.x ")
-  }
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.springframework.boot:spring-boot-webtestclient")
@@ -155,8 +109,8 @@ dependencies {
   testImplementation("org.wiremock:wiremock-standalone:3.13.2")
   testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-test-support:2.4.0")
   testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.5.0")
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.2.0")
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-test-autoconfigure:2.2.0")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:3.0.0")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-test-autoconfigure:3.0.0")
   testImplementation("net.javacrumbs.json-unit:json-unit-assertj:5.1.1")
 }
 
