@@ -2,13 +2,13 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.4"
-  kotlin("jvm") version "2.3.21"
+  kotlin("jvm") version "2.4.10"
   id("org.unbroken-dome.test-sets") version "4.1.0"
   id("jacoco")
-  kotlin("plugin.jpa") version "2.3.21"
+  kotlin("plugin.jpa") version "2.4.10"
   id("org.sonarqube") version "6.2.0.5505"
-  kotlin("plugin.spring") version "2.3.21"
-  kotlin("plugin.serialization") version "2.3.21"
+  kotlin("plugin.spring") version "2.4.10"
+  kotlin("plugin.serialization") version "2.4.10"
 }
 
 configurations {
@@ -43,27 +43,27 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
-  implementation("io.micrometer:micrometer-registry-prometheus:1.15.1")
-  implementation("joda-time:joda-time:2.14.0")
+  implementation("io.micrometer:micrometer-registry-prometheus")
+  implementation("joda-time:joda-time:2.14.3")
   // At the time of writing, there are no versions of poi-tl beyond 1.12.2, hence the overridden implementations below
   implementation("com.deepoove:poi-tl:1.12.2") {
     // exclude apache.xmlgraphics batik due to vulnerabilities when imported with poi-tl
     exclude("org.apache.xmlgraphics", "batik-codec")
     exclude("org.apache.xmlgraphics", "batik-transcoder")
-    implementation("org.apache.commons:commons-compress:1.27.1") // Address CVE-2024-25710 and CVE-2024-26308 present in v1.21
+    implementation("org.apache.commons:commons-compress:1.28.0") // Address CVE-2024-25710 and CVE-2024-26308 present in v1.21
     implementation("org.apache.poi:poi-ooxml:5.5.1") // Address CVE-2025-31672 present in 5.2.2
   }
   implementation("org.springframework.boot:spring-boot-jackson2")
 
   implementation("org.springframework.boot:spring-boot-starter-flyway")
   implementation("org.flywaydb:flyway-database-postgresql")
-  implementation("org.postgresql:postgresql:42.7.12")
+  implementation("org.postgresql:postgresql:42.7.13")
 
-  implementation("io.sentry:sentry-spring-boot-4:8.42.0")
-  implementation("io.sentry:sentry-logback:8.42.0")
+  implementation("io.sentry:sentry-spring-boot-4:8.52.0")
+  implementation("io.sentry:sentry-logback:8.52.0")
 
   // OpenAPI dependencies
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
   constraints {
     implementation("org.webjars:swagger-ui:5.32.11") {
       because("Address DOMPurify CVEs (CVE-2026-65898 through CVE-2026-66010) - pinned by plugin 11.0.2")
@@ -74,13 +74,13 @@ dependencies {
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
   implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.10.0")
-  implementation("io.hypersistence:hypersistence-utils-hibernate-71:3.15.2")
+  implementation("io.hypersistence:hypersistence-utils-hibernate-71:3.15.4")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.4.0")
-  implementation("org.json:json:20250517")
+  implementation("org.json:json:20260719")
 
-  implementation("com.google.code.gson:gson:2.13.2")
+  implementation("com.google.code.gson:gson:2.14.0")
 
-  implementation("io.flipt:flipt-client-java:1.2.1")
+  implementation("io.flipt:flipt-client-java:1.3.3")
 
   // shedlock is currently unused, but is expected to be used recurringly with roll-outs
   // requiring recommendations to be soft deleted due to incompatibilities with new functionality
